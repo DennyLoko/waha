@@ -214,6 +214,10 @@ import {
 import esm from '@waha/vendor/esm';
 import { IsEditedMessage } from '@waha/core/utils/pwa';
 import { GoToJSWAProto } from '@waha/core/engines/gows/waproto';
+import {
+  buildReplyFields,
+  quotedBody,
+} from '@waha/core/engines/gows/reply.gows';
 import { extractWALocation } from '@waha/core/engines/waproto/locaiton';
 import { extractVCards } from '@waha/core/engines/waproto/vcards';
 import { TmpDir } from '@waha/utils/tmpdir';
@@ -3042,6 +3046,7 @@ export class WhatsappSessionGoWSCore extends WhatsappSession {
       );
       this.logger.error(e, e.stack);
     }
+    const replyFields = buildReplyFields(waproto, body, this.logger);
 
     return {
       id: id,
@@ -3049,7 +3054,7 @@ export class WhatsappSessionGoWSCore extends WhatsappSession {
       from: toCusFormat(fromToParticipant.from),
       fromMe: message.Info.IsFromMe,
       source: source,
-      body: body,
+      body: replyFields.body,
       to: toCusFormat(fromToParticipant.to),
       participant: toCusFormat(fromToParticipant.participant),
       // Media
@@ -3062,6 +3067,7 @@ export class WhatsappSessionGoWSCore extends WhatsappSession {
       vCards: extractVCards(waproto),
       ackName: WAMessageAck[ack] || ACK_UNKNOWN,
       replyTo: replyTo,
+      ...(replyFields.reply ? { reply: replyFields.reply } : {}),
       _data: message,
     };
   }
@@ -3204,7 +3210,7 @@ export class WhatsappSessionGoWSCore extends WhatsappSession {
     if (!quotedMessage) {
       return null;
     }
-    const body = extractBody(quotedMessage);
+    const body = quotedBody(quotedMessage);
     const mediaContent = extractMediaContent(quotedMessage);
     return {
       id: contextInfo.stanzaID,
