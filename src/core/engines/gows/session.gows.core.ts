@@ -109,6 +109,13 @@ import {
   WANumberExistResult,
 } from '@waha/structures/chatting.dto';
 import { SendListRequest } from '@waha/structures/chatting.list.dto';
+import { SendButtonsRequest } from '@waha/structures/chatting.buttons.dto';
+import {
+  assertButtonsBody,
+  buttonsSendError,
+  assertJidAllowedForButtons,
+  toInteractiveMessage,
+} from '@waha/core/engines/gows/buttons.gows';
 import { ContactQuery, ContactUpdateBody } from '@waha/structures/contacts.dto';
 import {
   ACK_UNKNOWN,
@@ -1235,6 +1242,46 @@ export class WhatsappSessionGoWSCore extends WhatsappSession {
       list: list,
     });
     const response = await promisify(this.client.SendMessage)(message);
+    const data = response.toObject();
+    return this.messageResponse(jid, data);
+  }
+
+  @Activity()
+  async sendButtons(request: SendButtonsRequest): Promise<any> {
+    const jid = await this.hooks.wid.chat.promise(
+      request.chatId,
+      'sendButtons',
+    );
+    const types = request.buttons?.map((button) => button.type);
+    this.logger.debug({ buttons: types }, 'Sending buttons message');
+    try {
+      assertJidAllowedForButtons(jid);
+      assertButtonsBody(request);
+    } catch (error) {
+      this.logger.warn({ buttons: types }, error.message);
+      throw error;
+    }
+    let headerMedia: messages.Media | undefined;
+    if (request.headerImage) {
+      headerMedia = await this.fileToMedia(request.headerImage);
+      headerMedia.type = messages.MediaType.IMAGE;
+      headerMedia.mimetype = headerMedia.mimetype || WAMimeType.IMAGE;
+    }
+    const message = new messages.MessageRequest({
+      jid: jid,
+      session: this.session,
+      interactive: toInteractiveMessage(request, headerMedia),
+    });
+    let response: messages.MessageResponse;
+    try {
+      response = await promisify(this.client.SendMessage)(message);
+    } catch (error) {
+      const mapped = buttonsSendError(error);
+      if (mapped instanceof UnprocessableEntityException) {
+        this.logger.warn({ buttons: types }, mapped.message);
+      }
+      throw mapped;
+    }
     const data = response.toObject();
     return this.messageResponse(jid, data);
   }

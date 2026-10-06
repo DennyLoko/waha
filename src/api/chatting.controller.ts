@@ -209,7 +209,15 @@ export class ChattingController {
   @Post('/sendButtons')
   @ApiOperation({
     summary: 'Send buttons message (interactive)',
-    description: 'Send Buttons',
+    description:
+      'Send Buttons.\n\n' +
+      'GOWS rules (violations return 422):\n' +
+      '- `body` is required\n' +
+      '- up to 3 `reply` buttons\n' +
+      '- `reply` buttons cannot be mixed with `url`/`call`/`copy`\n' +
+      '- up to 2 `url`/`call`/`copy` (CTA) buttons\n' +
+      '- direct chats and groups are allowed; newsletter, broadcast and status are rejected\n\n' +
+      'The request example (4 mixed buttons) is valid only on NOWEB - GOWS returns 422 for it.',
     deprecated: true,
   })
   @CheckPolicies(CanSession(Action.Send, FromBody('session')))
