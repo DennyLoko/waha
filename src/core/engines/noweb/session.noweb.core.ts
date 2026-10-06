@@ -257,6 +257,7 @@ import {
 } from '@waha/core/utils/secretEncryptedMessageEdit';
 import { extractWALocation } from '@waha/core/engines/waproto/locaiton';
 import { extractVCards } from '@waha/core/engines/waproto/vcards';
+import { extractReply } from '@waha/core/utils/reply';
 import { WAMimeType } from '@waha/core/media/WAMimeType';
 import {
   WAHA_CLIENT_BROWSER_NAME,
@@ -3456,13 +3457,14 @@ export class WhatsappSessionNoWebCore extends WhatsappSession {
     let source = await this.hooks.message.source.promise(message.key.id);
     source = source ?? MessageSource.APP;
     const waproto = message.message;
+    const reply = extractReply(waproto, this.logger);
     return {
       id: id,
       timestamp: ensureNumber(message.messageTimestamp),
       from: toCusFormat(fromToParticipant.from),
       fromMe: message.key.fromMe,
       source: source,
-      body: body || null,
+      body: body || reply?.text || null,
       to: toCusFormat(fromToParticipant.to),
       participant: toCusFormat(fromToParticipant.participant),
       // Media
@@ -3476,6 +3478,7 @@ export class WhatsappSessionNoWebCore extends WhatsappSession {
       location: extractWALocation(waproto),
       vCards: extractVCards(waproto),
       replyTo: replyTo,
+      ...(reply ? { reply: reply } : {}),
       _data: message,
     };
   }
