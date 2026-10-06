@@ -1,0 +1,17 @@
+{
+  "interactiveResponseMessage": {
+    "body": {
+      "text": "Confirmar",
+      "format": "DEFAULT"
+    },
+    "nativeFlowResponseMessage": {
+      "name": "quick_reply",
+      "paramsJSON": "{\"id\":\"confirm\",\"display_text\":\"Confirmar\"}",
+      "version": 3
+    },
+    "contextInfo": {
+      "stanzaID": "3EB0AAAAAAAAAAAAAAAAAA",
+      "participant": "111111111111111@lid"
+    }
+  }
+}

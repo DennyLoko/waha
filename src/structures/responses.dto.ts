@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { WAMedia } from '@waha/structures/media.dto';
 import { ReplyToMessage } from '@waha/structures/message.dto';
+import { WAMessageReply } from '@waha/structures/reply.dto';
 
 import { WAMessageAck } from './enums.dto';
 import { ChatIdProperty, MessageIdProperty } from './properties.dto';
@@ -14,6 +15,61 @@ export class WALocation {
   url?: string;
   description?: string; // "comment" in proto
   thumbnail?: string;
+}
+
+export class WAMessageReplyDto implements WAMessageReply {
+  @ApiProperty({
+    description: 'Kind of interactive message the user replied to',
+    enum: ['button', 'list', 'native_flow'],
+  })
+  type: 'button' | 'list' | 'native_flow';
+
+  @ApiProperty({
+    description: 'Id of the selected button, list row or native flow',
+    example: 'like',
+    nullable: true,
+  })
+  id: string | null;
+
+  @ApiProperty({
+    description: 'Text of the selected option',
+    example: 'Like',
+    nullable: true,
+  })
+  text: string | null;
+
+  @ApiProperty({
+    description: 'Description of the selected list row',
+    required: false,
+  })
+  description?: string;
+
+  @ApiProperty({
+    description: 'Index of the selected button (template buttons only)',
+    required: false,
+  })
+  index?: number;
+
+  @ApiProperty({
+    description: 'WhatsApp message type the reply was extracted from',
+    enum: [
+      'buttons_response',
+      'template_button_reply',
+      'list_response',
+      'interactive_response',
+    ],
+  })
+  source:
+    | 'buttons_response'
+    | 'template_button_reply'
+    | 'list_response'
+    | 'interactive_response';
+
+  @ApiProperty({
+    description: 'Parsed native flow params (interactive_response only)',
+    required: false,
+  })
+  params?: any;
 }
 
 export enum MessageSource {
@@ -118,6 +174,14 @@ export class WAMessage extends WAMessageBase {
   vCards?: string[];
 
   replyTo?: ReplyToMessage;
+
+  @ApiProperty({
+    description:
+      'Reply to an interactive message (buttons, list or native flow), if the message is one',
+    required: false,
+    type: WAMessageReplyDto,
+  })
+  reply?: WAMessageReply;
 
   /** Returns message in a raw format */
   @ApiProperty({

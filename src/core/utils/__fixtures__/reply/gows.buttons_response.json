@@ -1,0 +1,11 @@
+{
+  "buttonsResponseMessage": {
+    "selectedDisplayText": "Gostei",
+    "selectedButtonID": "like",
+    "contextInfo": {
+      "stanzaID": "3EB0FECBA64AE42D2269B1",
+      "participant": "111111111111111@lid"
+    },
+    "type": "DISPLAY_TEXT"
+  }
+}

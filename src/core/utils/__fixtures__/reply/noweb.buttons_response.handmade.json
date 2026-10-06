@@ -1,0 +1,11 @@
+{
+  "buttonsResponseMessage": {
+    "selectedButtonId": "like",
+    "selectedDisplayText": "Gostei",
+    "contextInfo": {
+      "stanzaId": "3EB0FECBA64AE42D2269B1",
+      "participant": "5511999999999@s.whatsapp.net"
+    },
+    "type": 1
+  }
+}

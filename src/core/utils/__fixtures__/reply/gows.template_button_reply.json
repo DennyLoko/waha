@@ -1,0 +1,16 @@
+{
+  "templateButtonReplyMessage": {
+    "selectedID": "fix_a",
+    "selectedDisplayText": "Fix A",
+    "contextInfo": {
+      "stanzaID": "3EB0D7C0E4195A94C9F55B",
+      "participant": "111111111111111@lid",
+      "disappearingMode": {
+        "initiator": "CHANGED_IN_CHAT",
+        "trigger": "CHAT_SETTING",
+        "initiatedByMe": false
+      }
+    },
+    "selectedIndex": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "listResponseMessage": {
+    "title": "Margherita",
+    "listType": "SINGLE_SELECT",
+    "singleSelectReply": {
+      "selectedRowID": "pz_marg"
+    },
+    "contextInfo": {
+      "stanzaID": "3EB0EE29A2A9FDA3F92FC1",
+      "participant": "111111111111111@lid"
+    },
+    "description": "Molho, mussarela, manjericão"
+  }
+}

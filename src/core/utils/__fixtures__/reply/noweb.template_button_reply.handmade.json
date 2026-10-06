@@ -1,0 +1,11 @@
+{
+  "templateButtonReplyMessage": {
+    "selectedId": "fix_a",
+    "selectedDisplayText": "Fix A",
+    "contextInfo": {
+      "stanzaId": "3EB0D7C0E4195A94C9F55B",
+      "participant": "5511999999999@s.whatsapp.net"
+    },
+    "selectedIndex": 0
+  }
+}
