@@ -44,6 +44,14 @@ export namespace messages {
         READ = 0,
         PLAYED = 1
     }
+    export enum PixKeyType {
+        PIX_KEY_TYPE_UNSPECIFIED = 0,
+        PIX_KEY_TYPE_PHONE = 1,
+        PIX_KEY_TYPE_EMAIL = 2,
+        PIX_KEY_TYPE_CPF = 3,
+        PIX_KEY_TYPE_CNPJ = 4,
+        PIX_KEY_TYPE_RANDOM = 5
+    }
     export class OptionalString extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
@@ -4444,6 +4452,7 @@ export namespace messages {
             pollVote?: PollVoteMessage;
             mentions?: string[];
             forward?: ForwardOptions;
+            interactive?: InteractiveMessage;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [11, 13, 19], this.#one_of_decls);
@@ -4507,6 +4516,9 @@ export namespace messages {
                 }
                 if ("forward" in data && data.forward != undefined) {
                     this.forward = data.forward;
+                }
+                if ("interactive" in data && data.interactive != undefined) {
+                    this.interactive = data.interactive;
                 }
             }
         }
@@ -4663,6 +4675,15 @@ export namespace messages {
         get has_forward() {
             return pb_1.Message.getField(this, 20) != null;
         }
+        get interactive() {
+            return pb_1.Message.getWrapperField(this, InteractiveMessage, 1000) as InteractiveMessage;
+        }
+        set interactive(value: InteractiveMessage) {
+            pb_1.Message.setWrapperField(this, 1000, value);
+        }
+        get has_interactive() {
+            return pb_1.Message.getField(this, 1000) != null;
+        }
         static fromObject(data: {
             session?: ReturnType<typeof Session.prototype.toObject>;
             jid?: string;
@@ -4684,6 +4705,7 @@ export namespace messages {
             pollVote?: ReturnType<typeof PollVoteMessage.prototype.toObject>;
             mentions?: string[];
             forward?: ReturnType<typeof ForwardOptions.prototype.toObject>;
+            interactive?: ReturnType<typeof InteractiveMessage.prototype.toObject>;
         }): MessageRequest {
             const message = new MessageRequest({});
             if (data.session != null) {
@@ -4746,6 +4768,9 @@ export namespace messages {
             if (data.forward != null) {
                 message.forward = ForwardOptions.fromObject(data.forward);
             }
+            if (data.interactive != null) {
+                message.interactive = InteractiveMessage.fromObject(data.interactive);
+            }
             return message;
         }
         toObject() {
@@ -4770,6 +4795,7 @@ export namespace messages {
                 pollVote?: ReturnType<typeof PollVoteMessage.prototype.toObject>;
                 mentions?: string[];
                 forward?: ReturnType<typeof ForwardOptions.prototype.toObject>;
+                interactive?: ReturnType<typeof InteractiveMessage.prototype.toObject>;
             } = {};
             if (this.session != null) {
                 data.session = this.session.toObject();
@@ -4831,6 +4857,9 @@ export namespace messages {
             if (this.forward != null) {
                 data.forward = this.forward.toObject();
             }
+            if (this.interactive != null) {
+                data.interactive = this.interactive.toObject();
+            }
             return data;
         }
         serialize(): Uint8Array;
@@ -4877,6 +4906,8 @@ export namespace messages {
                 writer.writeRepeatedString(19, this.mentions);
             if (this.has_forward)
                 writer.writeMessage(20, this.forward, () => this.forward.serialize(writer));
+            if (this.has_interactive)
+                writer.writeMessage(1000, this.interactive, () => this.interactive.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -4945,6 +4976,9 @@ export namespace messages {
                         break;
                     case 20:
                         reader.readMessage(message.forward, () => message.forward = ForwardOptions.deserialize(reader));
+                        break;
+                    case 1000:
+                        reader.readMessage(message.interactive, () => message.interactive = InteractiveMessage.deserialize(reader));
                         break;
                     default: reader.skipField();
                 }
@@ -11414,6 +11448,1171 @@ export namespace messages {
         }
         static deserializeBinary(bytes: Uint8Array): PollVoteMessage {
             return PollVoteMessage.deserialize(bytes);
+        }
+    }
+    export class InteractiveHeader extends pb_1.Message {
+        #one_of_decls: number[][] = [[1], [2]];
+        constructor(data?: any[] | ({
+            media?: Media;
+        } & (({
+            title?: string;
+        }) | ({
+            subtitle?: string;
+        })))) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("title" in data && data.title != undefined) {
+                    this.title = data.title;
+                }
+                if ("subtitle" in data && data.subtitle != undefined) {
+                    this.subtitle = data.subtitle;
+                }
+                if ("media" in data && data.media != undefined) {
+                    this.media = data.media;
+                }
+            }
+        }
+        get title() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set title(value: string) {
+            pb_1.Message.setOneofField(this, 1, this.#one_of_decls[0], value);
+        }
+        get has_title() {
+            return pb_1.Message.getField(this, 1) != null;
+        }
+        get subtitle() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set subtitle(value: string) {
+            pb_1.Message.setOneofField(this, 2, this.#one_of_decls[1], value);
+        }
+        get has_subtitle() {
+            return pb_1.Message.getField(this, 2) != null;
+        }
+        get media() {
+            return pb_1.Message.getWrapperField(this, Media, 3) as Media;
+        }
+        set media(value: Media) {
+            pb_1.Message.setWrapperField(this, 3, value);
+        }
+        get has_media() {
+            return pb_1.Message.getField(this, 3) != null;
+        }
+        get _title() {
+            const cases: {
+                [index: number]: "none" | "title";
+            } = {
+                0: "none",
+                1: "title"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [1])];
+        }
+        get _subtitle() {
+            const cases: {
+                [index: number]: "none" | "subtitle";
+            } = {
+                0: "none",
+                2: "subtitle"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [2])];
+        }
+        static fromObject(data: {
+            title?: string;
+            subtitle?: string;
+            media?: ReturnType<typeof Media.prototype.toObject>;
+        }): InteractiveHeader {
+            const message = new InteractiveHeader({});
+            if (data.title != null) {
+                message.title = data.title;
+            }
+            if (data.subtitle != null) {
+                message.subtitle = data.subtitle;
+            }
+            if (data.media != null) {
+                message.media = Media.fromObject(data.media);
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                title?: string;
+                subtitle?: string;
+                media?: ReturnType<typeof Media.prototype.toObject>;
+            } = {};
+            if (this.title != null) {
+                data.title = this.title;
+            }
+            if (this.subtitle != null) {
+                data.subtitle = this.subtitle;
+            }
+            if (this.media != null) {
+                data.media = this.media.toObject();
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.has_title)
+                writer.writeString(1, this.title);
+            if (this.has_subtitle)
+                writer.writeString(2, this.subtitle);
+            if (this.has_media)
+                writer.writeMessage(3, this.media, () => this.media.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): InteractiveHeader {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new InteractiveHeader();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.title = reader.readString();
+                        break;
+                    case 2:
+                        message.subtitle = reader.readString();
+                        break;
+                    case 3:
+                        reader.readMessage(message.media, () => message.media = Media.deserialize(reader));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): InteractiveHeader {
+            return InteractiveHeader.deserialize(bytes);
+        }
+    }
+    export class QuickReplyButton extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            displayText?: string;
+            id?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("displayText" in data && data.displayText != undefined) {
+                    this.displayText = data.displayText;
+                }
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
+            }
+        }
+        get displayText() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set displayText(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set id(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            displayText?: string;
+            id?: string;
+        }): QuickReplyButton {
+            const message = new QuickReplyButton({});
+            if (data.displayText != null) {
+                message.displayText = data.displayText;
+            }
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                displayText?: string;
+                id?: string;
+            } = {};
+            if (this.displayText != null) {
+                data.displayText = this.displayText;
+            }
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.displayText.length)
+                writer.writeString(1, this.displayText);
+            if (this.id.length)
+                writer.writeString(2, this.id);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): QuickReplyButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new QuickReplyButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.displayText = reader.readString();
+                        break;
+                    case 2:
+                        message.id = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): QuickReplyButton {
+            return QuickReplyButton.deserialize(bytes);
+        }
+    }
+    export class CtaUrlButton extends pb_1.Message {
+        #one_of_decls: number[][] = [[3]];
+        constructor(data?: any[] | ({
+            displayText?: string;
+            url?: string;
+        } & (({
+            merchantUrl?: string;
+        })))) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("displayText" in data && data.displayText != undefined) {
+                    this.displayText = data.displayText;
+                }
+                if ("url" in data && data.url != undefined) {
+                    this.url = data.url;
+                }
+                if ("merchantUrl" in data && data.merchantUrl != undefined) {
+                    this.merchantUrl = data.merchantUrl;
+                }
+            }
+        }
+        get displayText() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set displayText(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get url() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set url(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get merchantUrl() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set merchantUrl(value: string) {
+            pb_1.Message.setOneofField(this, 3, this.#one_of_decls[0], value);
+        }
+        get has_merchantUrl() {
+            return pb_1.Message.getField(this, 3) != null;
+        }
+        get _merchantUrl() {
+            const cases: {
+                [index: number]: "none" | "merchantUrl";
+            } = {
+                0: "none",
+                3: "merchantUrl"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [3])];
+        }
+        static fromObject(data: {
+            displayText?: string;
+            url?: string;
+            merchantUrl?: string;
+        }): CtaUrlButton {
+            const message = new CtaUrlButton({});
+            if (data.displayText != null) {
+                message.displayText = data.displayText;
+            }
+            if (data.url != null) {
+                message.url = data.url;
+            }
+            if (data.merchantUrl != null) {
+                message.merchantUrl = data.merchantUrl;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                displayText?: string;
+                url?: string;
+                merchantUrl?: string;
+            } = {};
+            if (this.displayText != null) {
+                data.displayText = this.displayText;
+            }
+            if (this.url != null) {
+                data.url = this.url;
+            }
+            if (this.merchantUrl != null) {
+                data.merchantUrl = this.merchantUrl;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.displayText.length)
+                writer.writeString(1, this.displayText);
+            if (this.url.length)
+                writer.writeString(2, this.url);
+            if (this.has_merchantUrl)
+                writer.writeString(3, this.merchantUrl);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): CtaUrlButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new CtaUrlButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.displayText = reader.readString();
+                        break;
+                    case 2:
+                        message.url = reader.readString();
+                        break;
+                    case 3:
+                        message.merchantUrl = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): CtaUrlButton {
+            return CtaUrlButton.deserialize(bytes);
+        }
+    }
+    export class CtaCallButton extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            displayText?: string;
+            phoneNumber?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("displayText" in data && data.displayText != undefined) {
+                    this.displayText = data.displayText;
+                }
+                if ("phoneNumber" in data && data.phoneNumber != undefined) {
+                    this.phoneNumber = data.phoneNumber;
+                }
+            }
+        }
+        get displayText() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set displayText(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get phoneNumber() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set phoneNumber(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            displayText?: string;
+            phoneNumber?: string;
+        }): CtaCallButton {
+            const message = new CtaCallButton({});
+            if (data.displayText != null) {
+                message.displayText = data.displayText;
+            }
+            if (data.phoneNumber != null) {
+                message.phoneNumber = data.phoneNumber;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                displayText?: string;
+                phoneNumber?: string;
+            } = {};
+            if (this.displayText != null) {
+                data.displayText = this.displayText;
+            }
+            if (this.phoneNumber != null) {
+                data.phoneNumber = this.phoneNumber;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.displayText.length)
+                writer.writeString(1, this.displayText);
+            if (this.phoneNumber.length)
+                writer.writeString(2, this.phoneNumber);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): CtaCallButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new CtaCallButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.displayText = reader.readString();
+                        break;
+                    case 2:
+                        message.phoneNumber = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): CtaCallButton {
+            return CtaCallButton.deserialize(bytes);
+        }
+    }
+    export class CtaCopyButton extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            displayText?: string;
+            copyCode?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("displayText" in data && data.displayText != undefined) {
+                    this.displayText = data.displayText;
+                }
+                if ("copyCode" in data && data.copyCode != undefined) {
+                    this.copyCode = data.copyCode;
+                }
+            }
+        }
+        get displayText() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set displayText(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get copyCode() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set copyCode(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            displayText?: string;
+            copyCode?: string;
+        }): CtaCopyButton {
+            const message = new CtaCopyButton({});
+            if (data.displayText != null) {
+                message.displayText = data.displayText;
+            }
+            if (data.copyCode != null) {
+                message.copyCode = data.copyCode;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                displayText?: string;
+                copyCode?: string;
+            } = {};
+            if (this.displayText != null) {
+                data.displayText = this.displayText;
+            }
+            if (this.copyCode != null) {
+                data.copyCode = this.copyCode;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.displayText.length)
+                writer.writeString(1, this.displayText);
+            if (this.copyCode.length)
+                writer.writeString(2, this.copyCode);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): CtaCopyButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new CtaCopyButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.displayText = reader.readString();
+                        break;
+                    case 2:
+                        message.copyCode = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): CtaCopyButton {
+            return CtaCopyButton.deserialize(bytes);
+        }
+    }
+    export class PixButton extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            merchantName?: string;
+            key?: string;
+            keyType?: PixKeyType;
+            currency?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("merchantName" in data && data.merchantName != undefined) {
+                    this.merchantName = data.merchantName;
+                }
+                if ("key" in data && data.key != undefined) {
+                    this.key = data.key;
+                }
+                if ("keyType" in data && data.keyType != undefined) {
+                    this.keyType = data.keyType;
+                }
+                if ("currency" in data && data.currency != undefined) {
+                    this.currency = data.currency;
+                }
+            }
+        }
+        get merchantName() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set merchantName(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get key() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set key(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get keyType() {
+            return pb_1.Message.getFieldWithDefault(this, 3, PixKeyType.PIX_KEY_TYPE_UNSPECIFIED) as PixKeyType;
+        }
+        set keyType(value: PixKeyType) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get currency() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set currency(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        static fromObject(data: {
+            merchantName?: string;
+            key?: string;
+            keyType?: PixKeyType;
+            currency?: string;
+        }): PixButton {
+            const message = new PixButton({});
+            if (data.merchantName != null) {
+                message.merchantName = data.merchantName;
+            }
+            if (data.key != null) {
+                message.key = data.key;
+            }
+            if (data.keyType != null) {
+                message.keyType = data.keyType;
+            }
+            if (data.currency != null) {
+                message.currency = data.currency;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                merchantName?: string;
+                key?: string;
+                keyType?: PixKeyType;
+                currency?: string;
+            } = {};
+            if (this.merchantName != null) {
+                data.merchantName = this.merchantName;
+            }
+            if (this.key != null) {
+                data.key = this.key;
+            }
+            if (this.keyType != null) {
+                data.keyType = this.keyType;
+            }
+            if (this.currency != null) {
+                data.currency = this.currency;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.merchantName.length)
+                writer.writeString(1, this.merchantName);
+            if (this.key.length)
+                writer.writeString(2, this.key);
+            if (this.keyType != PixKeyType.PIX_KEY_TYPE_UNSPECIFIED)
+                writer.writeEnum(3, this.keyType);
+            if (this.currency.length)
+                writer.writeString(4, this.currency);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): PixButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new PixButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.merchantName = reader.readString();
+                        break;
+                    case 2:
+                        message.key = reader.readString();
+                        break;
+                    case 3:
+                        message.keyType = reader.readEnum();
+                        break;
+                    case 4:
+                        message.currency = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): PixButton {
+            return PixButton.deserialize(bytes);
+        }
+    }
+    export class NativeFlowRawButton extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            name?: string;
+            paramsJson?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("name" in data && data.name != undefined) {
+                    this.name = data.name;
+                }
+                if ("paramsJson" in data && data.paramsJson != undefined) {
+                    this.paramsJson = data.paramsJson;
+                }
+            }
+        }
+        get name() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set name(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get paramsJson() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set paramsJson(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            name?: string;
+            paramsJson?: string;
+        }): NativeFlowRawButton {
+            const message = new NativeFlowRawButton({});
+            if (data.name != null) {
+                message.name = data.name;
+            }
+            if (data.paramsJson != null) {
+                message.paramsJson = data.paramsJson;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                name?: string;
+                paramsJson?: string;
+            } = {};
+            if (this.name != null) {
+                data.name = this.name;
+            }
+            if (this.paramsJson != null) {
+                data.paramsJson = this.paramsJson;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.name.length)
+                writer.writeString(1, this.name);
+            if (this.paramsJson.length)
+                writer.writeString(2, this.paramsJson);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): NativeFlowRawButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new NativeFlowRawButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.name = reader.readString();
+                        break;
+                    case 2:
+                        message.paramsJson = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): NativeFlowRawButton {
+            return NativeFlowRawButton.deserialize(bytes);
+        }
+    }
+    export class NativeFlowButton extends pb_1.Message {
+        #one_of_decls: number[][] = [[1, 2, 3, 4, 5, 7]];
+        constructor(data?: any[] | ({} & (({
+            reply?: QuickReplyButton;
+            url?: never;
+            call?: never;
+            copy?: never;
+            pix?: never;
+            raw?: never;
+        } | {
+            reply?: never;
+            url?: CtaUrlButton;
+            call?: never;
+            copy?: never;
+            pix?: never;
+            raw?: never;
+        } | {
+            reply?: never;
+            url?: never;
+            call?: CtaCallButton;
+            copy?: never;
+            pix?: never;
+            raw?: never;
+        } | {
+            reply?: never;
+            url?: never;
+            call?: never;
+            copy?: CtaCopyButton;
+            pix?: never;
+            raw?: never;
+        } | {
+            reply?: never;
+            url?: never;
+            call?: never;
+            copy?: never;
+            pix?: PixButton;
+            raw?: never;
+        } | {
+            reply?: never;
+            url?: never;
+            call?: never;
+            copy?: never;
+            pix?: never;
+            raw?: NativeFlowRawButton;
+        })))) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("reply" in data && data.reply != undefined) {
+                    this.reply = data.reply;
+                }
+                if ("url" in data && data.url != undefined) {
+                    this.url = data.url;
+                }
+                if ("call" in data && data.call != undefined) {
+                    this.call = data.call;
+                }
+                if ("copy" in data && data.copy != undefined) {
+                    this.copy = data.copy;
+                }
+                if ("pix" in data && data.pix != undefined) {
+                    this.pix = data.pix;
+                }
+                if ("raw" in data && data.raw != undefined) {
+                    this.raw = data.raw;
+                }
+            }
+        }
+        get reply() {
+            return pb_1.Message.getWrapperField(this, QuickReplyButton, 1) as QuickReplyButton;
+        }
+        set reply(value: QuickReplyButton) {
+            pb_1.Message.setOneofWrapperField(this, 1, this.#one_of_decls[0], value);
+        }
+        get has_reply() {
+            return pb_1.Message.getField(this, 1) != null;
+        }
+        get url() {
+            return pb_1.Message.getWrapperField(this, CtaUrlButton, 2) as CtaUrlButton;
+        }
+        set url(value: CtaUrlButton) {
+            pb_1.Message.setOneofWrapperField(this, 2, this.#one_of_decls[0], value);
+        }
+        get has_url() {
+            return pb_1.Message.getField(this, 2) != null;
+        }
+        get call() {
+            return pb_1.Message.getWrapperField(this, CtaCallButton, 3) as CtaCallButton;
+        }
+        set call(value: CtaCallButton) {
+            pb_1.Message.setOneofWrapperField(this, 3, this.#one_of_decls[0], value);
+        }
+        get has_call() {
+            return pb_1.Message.getField(this, 3) != null;
+        }
+        get copy() {
+            return pb_1.Message.getWrapperField(this, CtaCopyButton, 4) as CtaCopyButton;
+        }
+        set copy(value: CtaCopyButton) {
+            pb_1.Message.setOneofWrapperField(this, 4, this.#one_of_decls[0], value);
+        }
+        get has_copy() {
+            return pb_1.Message.getField(this, 4) != null;
+        }
+        get pix() {
+            return pb_1.Message.getWrapperField(this, PixButton, 5) as PixButton;
+        }
+        set pix(value: PixButton) {
+            pb_1.Message.setOneofWrapperField(this, 5, this.#one_of_decls[0], value);
+        }
+        get has_pix() {
+            return pb_1.Message.getField(this, 5) != null;
+        }
+        get raw() {
+            return pb_1.Message.getWrapperField(this, NativeFlowRawButton, 7) as NativeFlowRawButton;
+        }
+        set raw(value: NativeFlowRawButton) {
+            pb_1.Message.setOneofWrapperField(this, 7, this.#one_of_decls[0], value);
+        }
+        get has_raw() {
+            return pb_1.Message.getField(this, 7) != null;
+        }
+        get button() {
+            const cases: {
+                [index: number]: "none" | "reply" | "url" | "call" | "copy" | "pix" | "raw";
+            } = {
+                0: "none",
+                1: "reply",
+                2: "url",
+                3: "call",
+                4: "copy",
+                5: "pix",
+                7: "raw"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [1, 2, 3, 4, 5, 7])];
+        }
+        static fromObject(data: {
+            reply?: ReturnType<typeof QuickReplyButton.prototype.toObject>;
+            url?: ReturnType<typeof CtaUrlButton.prototype.toObject>;
+            call?: ReturnType<typeof CtaCallButton.prototype.toObject>;
+            copy?: ReturnType<typeof CtaCopyButton.prototype.toObject>;
+            pix?: ReturnType<typeof PixButton.prototype.toObject>;
+            raw?: ReturnType<typeof NativeFlowRawButton.prototype.toObject>;
+        }): NativeFlowButton {
+            const message = new NativeFlowButton({});
+            if (data.reply != null) {
+                message.reply = QuickReplyButton.fromObject(data.reply);
+            }
+            if (data.url != null) {
+                message.url = CtaUrlButton.fromObject(data.url);
+            }
+            if (data.call != null) {
+                message.call = CtaCallButton.fromObject(data.call);
+            }
+            if (data.copy != null) {
+                message.copy = CtaCopyButton.fromObject(data.copy);
+            }
+            if (data.pix != null) {
+                message.pix = PixButton.fromObject(data.pix);
+            }
+            if (data.raw != null) {
+                message.raw = NativeFlowRawButton.fromObject(data.raw);
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                reply?: ReturnType<typeof QuickReplyButton.prototype.toObject>;
+                url?: ReturnType<typeof CtaUrlButton.prototype.toObject>;
+                call?: ReturnType<typeof CtaCallButton.prototype.toObject>;
+                copy?: ReturnType<typeof CtaCopyButton.prototype.toObject>;
+                pix?: ReturnType<typeof PixButton.prototype.toObject>;
+                raw?: ReturnType<typeof NativeFlowRawButton.prototype.toObject>;
+            } = {};
+            if (this.reply != null) {
+                data.reply = this.reply.toObject();
+            }
+            if (this.url != null) {
+                data.url = this.url.toObject();
+            }
+            if (this.call != null) {
+                data.call = this.call.toObject();
+            }
+            if (this.copy != null) {
+                data.copy = this.copy.toObject();
+            }
+            if (this.pix != null) {
+                data.pix = this.pix.toObject();
+            }
+            if (this.raw != null) {
+                data.raw = this.raw.toObject();
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.has_reply)
+                writer.writeMessage(1, this.reply, () => this.reply.serialize(writer));
+            if (this.has_url)
+                writer.writeMessage(2, this.url, () => this.url.serialize(writer));
+            if (this.has_call)
+                writer.writeMessage(3, this.call, () => this.call.serialize(writer));
+            if (this.has_copy)
+                writer.writeMessage(4, this.copy, () => this.copy.serialize(writer));
+            if (this.has_pix)
+                writer.writeMessage(5, this.pix, () => this.pix.serialize(writer));
+            if (this.has_raw)
+                writer.writeMessage(7, this.raw, () => this.raw.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): NativeFlowButton {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new NativeFlowButton();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        reader.readMessage(message.reply, () => message.reply = QuickReplyButton.deserialize(reader));
+                        break;
+                    case 2:
+                        reader.readMessage(message.url, () => message.url = CtaUrlButton.deserialize(reader));
+                        break;
+                    case 3:
+                        reader.readMessage(message.call, () => message.call = CtaCallButton.deserialize(reader));
+                        break;
+                    case 4:
+                        reader.readMessage(message.copy, () => message.copy = CtaCopyButton.deserialize(reader));
+                        break;
+                    case 5:
+                        reader.readMessage(message.pix, () => message.pix = PixButton.deserialize(reader));
+                        break;
+                    case 7:
+                        reader.readMessage(message.raw, () => message.raw = NativeFlowRawButton.deserialize(reader));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): NativeFlowButton {
+            return NativeFlowButton.deserialize(bytes);
+        }
+    }
+    export class InteractiveMessage extends pb_1.Message {
+        #one_of_decls: number[][] = [[3]];
+        constructor(data?: any[] | ({
+            header?: InteractiveHeader;
+            body?: string;
+            buttons?: NativeFlowButton[];
+        } & (({
+            footer?: string;
+        })))) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [4], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("header" in data && data.header != undefined) {
+                    this.header = data.header;
+                }
+                if ("body" in data && data.body != undefined) {
+                    this.body = data.body;
+                }
+                if ("footer" in data && data.footer != undefined) {
+                    this.footer = data.footer;
+                }
+                if ("buttons" in data && data.buttons != undefined) {
+                    this.buttons = data.buttons;
+                }
+            }
+        }
+        get header() {
+            return pb_1.Message.getWrapperField(this, InteractiveHeader, 1) as InteractiveHeader;
+        }
+        set header(value: InteractiveHeader) {
+            pb_1.Message.setWrapperField(this, 1, value);
+        }
+        get has_header() {
+            return pb_1.Message.getField(this, 1) != null;
+        }
+        get body() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set body(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get footer() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set footer(value: string) {
+            pb_1.Message.setOneofField(this, 3, this.#one_of_decls[0], value);
+        }
+        get has_footer() {
+            return pb_1.Message.getField(this, 3) != null;
+        }
+        get buttons() {
+            return pb_1.Message.getRepeatedWrapperField(this, NativeFlowButton, 4) as NativeFlowButton[];
+        }
+        set buttons(value: NativeFlowButton[]) {
+            pb_1.Message.setRepeatedWrapperField(this, 4, value);
+        }
+        get _footer() {
+            const cases: {
+                [index: number]: "none" | "footer";
+            } = {
+                0: "none",
+                3: "footer"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [3])];
+        }
+        static fromObject(data: {
+            header?: ReturnType<typeof InteractiveHeader.prototype.toObject>;
+            body?: string;
+            footer?: string;
+            buttons?: ReturnType<typeof NativeFlowButton.prototype.toObject>[];
+        }): InteractiveMessage {
+            const message = new InteractiveMessage({});
+            if (data.header != null) {
+                message.header = InteractiveHeader.fromObject(data.header);
+            }
+            if (data.body != null) {
+                message.body = data.body;
+            }
+            if (data.footer != null) {
+                message.footer = data.footer;
+            }
+            if (data.buttons != null) {
+                message.buttons = data.buttons.map(item => NativeFlowButton.fromObject(item));
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                header?: ReturnType<typeof InteractiveHeader.prototype.toObject>;
+                body?: string;
+                footer?: string;
+                buttons?: ReturnType<typeof NativeFlowButton.prototype.toObject>[];
+            } = {};
+            if (this.header != null) {
+                data.header = this.header.toObject();
+            }
+            if (this.body != null) {
+                data.body = this.body;
+            }
+            if (this.footer != null) {
+                data.footer = this.footer;
+            }
+            if (this.buttons != null) {
+                data.buttons = this.buttons.map((item: NativeFlowButton) => item.toObject());
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.has_header)
+                writer.writeMessage(1, this.header, () => this.header.serialize(writer));
+            if (this.body.length)
+                writer.writeString(2, this.body);
+            if (this.has_footer)
+                writer.writeString(3, this.footer);
+            if (this.buttons.length)
+                writer.writeRepeatedMessage(4, this.buttons, (item: NativeFlowButton) => item.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): InteractiveMessage {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new InteractiveMessage();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        reader.readMessage(message.header, () => message.header = InteractiveHeader.deserialize(reader));
+                        break;
+                    case 2:
+                        message.body = reader.readString();
+                        break;
+                    case 3:
+                        message.footer = reader.readString();
+                        break;
+                    case 4:
+                        reader.readMessage(message.buttons, () => pb_1.Message.addToRepeatedWrapperField(message, 4, NativeFlowButton.deserialize(reader), NativeFlowButton));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): InteractiveMessage {
+            return InteractiveMessage.deserialize(bytes);
         }
     }
     interface GrpcUnaryServiceInterface<P, R> {
