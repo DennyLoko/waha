@@ -1,0 +1,31 @@
+# WAHA (plus fork) image: the official WAHA image with the GOWS binary
+# replaced by one built from the DennyLoko/gows-plus fork.
+#
+# Build contexts:
+#   - default context: unused (only this file)
+#   - gows-src: checkout of DennyLoko/gows-plus
+# Build args:
+#   - WAHA_IMAGE: WAHA image built from this repo's Dockerfile (USE_BROWSER=none)
+ARG WAHA_IMAGE=waha-plus:base
+ARG GOLANG_IMAGE_TAG=1.26-bookworm
+ARG PROTOC_GEN_GO_VERSION=v1.36.12
+ARG PROTOC_GEN_GO_GRPC_VERSION=v1.6.2
+
+FROM golang:${GOLANG_IMAGE_TAG} AS gows
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      protobuf-compiler libvips-dev && rm -rf /var/lib/apt/lists/*
+ARG PROTOC_GEN_GO_VERSION
+ARG PROTOC_GEN_GO_GRPC_VERSION
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOC_GEN_GO_VERSION} && \
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@${PROTOC_GEN_GO_GRPC_VERSION}
+WORKDIR /src
+COPY --from=gows-src src/go.mod src/go.sum ./src/
+RUN cd src && go mod download
+COPY --from=gows-src proto ./proto
+COPY --from=gows-src src ./src
+COPY --from=gows-src Makefile ./
+ENV PATH=$PATH:/go/bin
+RUN make build-proto && make build
+
+FROM ${WAHA_IMAGE}
+COPY --from=gows /src/bin/gows /app/gows
