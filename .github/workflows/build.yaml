@@ -7,6 +7,7 @@ on:
 
 jobs:
   docker-build:
+    if: github.repository == 'devlikeapro/waha'
     runs-on: ${{ matrix.runner }}
     name:
       ${{ matrix.engine }} - ${{ matrix.browser }} - ${{ matrix.platform }} -
